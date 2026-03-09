@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, TextStyle } from "react-native";
 import SimpleBox from "./simpleBox";
 import SimpleText from "./simpleText";
-import { useColors } from "@/assets/colors/colors";
+import { useTheme } from "@/hooks/useTheme";
 
 interface SingleValueBoxProps {
   headline?: string;
@@ -23,7 +23,7 @@ const SingleValueBox: React.FC<SingleValueBoxProps> = ({
   selectable,
   height = 40,
 }) => {
-  const colors = useColors();
+  const colors = useTheme();
   return (
     <SimpleBox
       style={{

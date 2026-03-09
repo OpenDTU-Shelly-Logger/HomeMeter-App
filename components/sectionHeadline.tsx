@@ -1,27 +1,27 @@
 import React from "react";
 import { View, Text } from "react-native";
 import SimpleText from "./simpleText";
-import { useColors } from "@/assets/colors/colors";
+import { useTheme } from "@/hooks/useTheme";
 
 type Props = {
-    text: string;
+  text: string;
 };
 
 export default function SectionHeadline({ text }: Props) {
-    const colors = useColors();
+  const colors = useTheme();
 
-    return (
-        <SimpleText
-            fontsize={20}
-            style={{
-                color: colors.secondaryText,
-                fontWeight: "bold",
-                textAlign: "center",
-                marginTop: 20,
-                marginBottom: 5,
-            }}
-        >
-            {text}
-        </SimpleText>
-    );
+  return (
+    <SimpleText
+      fontsize={20}
+      style={{
+        color: colors.secondaryText,
+        fontWeight: "bold",
+        textAlign: "center",
+        marginTop: 20,
+        marginBottom: 5,
+      }}
+    >
+      {text}
+    </SimpleText>
+  );
 }
