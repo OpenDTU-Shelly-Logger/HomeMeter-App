@@ -8,8 +8,9 @@ const de: Translations = {
   solarHistory: "Solar Verlauf",
   settings: "Einstellungen",
 
+  allTime: "Gesamt",
+
   // Section headers
-  general: "Allgemein",
   solarPanels: "Solarzellen",
   inverter: "Wechselrichter",
   phases: "Phasen",
@@ -17,13 +18,13 @@ const de: Translations = {
 
   // Overview / home values
   yieldToday: "Ertrag Heute",
-  totalYield: "Gesamtertrag",
+  totalYield: "Solar Gesamtertrag",
   peak: "Peak",
   currentPower: "Aktuelle Leistung",
   temperature: "Temperatur",
   houseConsumption: "Hausverbrauch",
   gridFeedIn: "Netzeinspeisung",
-  convertedSolarPower: "Umgesetzter Solarstrom",
+  usedSolarPower: "Genutzter Solarstrom",
   selfConsumptionRate: "Eigenverbrauchsquote",
   autarkyRate: "Autarkiegrad",
   totalPowerConsumption: "Gesamt Stromverbrauch",

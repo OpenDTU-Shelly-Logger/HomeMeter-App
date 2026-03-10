@@ -5,9 +5,10 @@ import { useTheme } from "@/hooks/useTheme";
 
 type Props = {
   text: string;
+  alignText?: "left" | "right" | "justify" | "center";
 };
 
-export default function SectionHeadline({ text }: Props) {
+export default function SectionHeadline({ text, alignText }: Props) {
   const colors = useTheme();
 
   return (
@@ -16,7 +17,8 @@ export default function SectionHeadline({ text }: Props) {
       style={{
         color: colors.secondaryText,
         fontWeight: "bold",
-        textAlign: "center",
+        textAlign: alignText ?? "center",
+        width: "100%",
         marginTop: 20,
         marginBottom: 5,
       }}

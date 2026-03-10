@@ -7,7 +7,7 @@ const en = {
   settings: "Settings",
 
   // Section headers
-  general: "General",
+  allTime: "Gesamt",
   solarPanels: "Solar Panels",
   inverter: "Inverter",
   phases: "Phases",
@@ -15,13 +15,13 @@ const en = {
 
   // Overview / home values
   yieldToday: "Today's Yield",
-  totalYield: "Total Yield",
+  totalYield: "Total Solar Yield",
   peak: "Peak",
   currentPower: "Current Power",
   temperature: "Temperature",
   houseConsumption: "House Consumption",
   gridFeedIn: "Grid Feed-in",
-  convertedSolarPower: "Converted Solar Power",
+  usedSolarPower: "Used Solar Power",
   selfConsumptionRate: "Self-Consumption Rate",
   autarkyRate: "Autarky Rate",
   totalPowerConsumption: "Total Power Consumption",

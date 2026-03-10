@@ -5,6 +5,7 @@ import React from "react";
 import { View } from "react-native";
 import SimpleText from "./simpleText";
 import Compass from "./compass";
+import { formatNumber } from "@/helper/formatHelper";
 
 export default function IndividualCellDisplay() {
   const data = useData();
@@ -51,7 +52,7 @@ export default function IndividualCellDisplay() {
           fontsize={fontSize}
           style={{ color: "black", fontWeight: "bold" }}
         >
-          {cellData.Power.v.toFixed(1)}W
+          {formatNumber(cellData.Power.v, 1, "W")}
         </SimpleText>
         <SimpleText
           fontsize={labelSize}

@@ -9,6 +9,7 @@ import SimpleKeyValueBox from "@/components/simpleKeyValueBox";
 import SectionHeadline from "@/components/sectionHeadline";
 import { useData } from "@/contexts/dataProvider";
 import { useTranslations } from "@/locales";
+import { formatNumber } from "@/helper/formatHelper";
 
 export default function PowerUsage() {
   const data = useData();
@@ -21,24 +22,24 @@ export default function PowerUsage() {
       >
         <SingleValueBox
           headline={t.currentFeedIn}
-          value={data.livePowerData?.total_power.toFixed(2) + "W"}
+          value={formatNumber(data.livePowerData?.total_power, 2, "W")}
         />
         <SingleValueBox
           headline={t.solarCurrent}
           value={
             "+" +
-            (data.liveSolarData?.total.Power.v.toFixed(2) ?? "") +
+            formatNumber(data.liveSolarData?.total.Power.v, 2) +
             data.liveSolarData?.total.Power.u
           }
         />
         <SingleValueBox
           headline={t.houseConsumption}
-          value={
-            (
-              (data.livePowerData?.total_power ?? 0) +
-              (data.liveSolarData?.total.Power.v ?? 0)
-            ).toFixed(2) + "W"
-          }
+          value={formatNumber(
+            (data.livePowerData?.total_power ?? 0) +
+              (data.liveSolarData?.total.Power.v ?? 0),
+            2,
+            "W",
+          )}
         />
       </VerticalView>
       <SectionHeadline text={t.phases} />
@@ -50,9 +51,9 @@ export default function PowerUsage() {
             headline={t.phase + " " + (index + 1)}
             key={index}
             data={[
-              { key: t.power, value: emeter.power.toFixed(2) + "W" },
-              { key: t.current, value: emeter.current.toFixed(2) + "A" },
-              { key: t.voltage, value: emeter.voltage.toFixed(2) + "V" },
+              { key: t.power, value: formatNumber(emeter.power, 2, "W") },
+              { key: t.current, value: formatNumber(emeter.current, 2, "A") },
+              { key: t.voltage, value: formatNumber(emeter.voltage, 2, "V") },
             ]}
           />
         ))}
