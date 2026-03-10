@@ -1,5 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  SolarLayoutConfig,
+  DEFAULT_SOLAR_LAYOUT,
+  encodeSolarLayout,
+  decodeSolarLayout,
+} from "@/types/SolarLayout";
 
 export type Language = "en" | "de";
 
@@ -8,6 +14,8 @@ interface SettingsContextType {
   setBaseUrl: (url: string) => Promise<void>;
   language: Language;
   setLanguage: (lang: Language) => Promise<void>;
+  solarLayout: SolarLayoutConfig;
+  setSolarLayout: (layout: SolarLayoutConfig) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -20,6 +28,8 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [baseUrl, setBaseUrlState] = useState<string>("");
   const [language, setLanguageState] = useState<Language>("en");
+  const [solarLayout, setSolarLayoutState] =
+    useState<SolarLayoutConfig>(DEFAULT_SOLAR_LAYOUT);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,13 +38,18 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const loadSettings = async () => {
     try {
-      const [storedUrl, storedLang] = await Promise.all([
+      const [storedUrl, storedLang, storedLayout] = await Promise.all([
         AsyncStorage.getItem("baseUrl"),
         AsyncStorage.getItem("language"),
+        AsyncStorage.getItem("solarLayout"),
       ]);
       if (storedUrl) setBaseUrlState(storedUrl);
       if (storedLang === "en" || storedLang === "de")
         setLanguageState(storedLang);
+      if (storedLayout) {
+        const parsed = decodeSolarLayout(storedLayout);
+        if (parsed) setSolarLayoutState(parsed);
+      }
     } catch (e) {
       console.error("Failed to load settings", e);
     } finally {
@@ -62,9 +77,26 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const setSolarLayout = async (layout: SolarLayoutConfig) => {
+    try {
+      await AsyncStorage.setItem("solarLayout", encodeSolarLayout(layout));
+      setSolarLayoutState(layout);
+    } catch (e) {
+      console.error("Failed to save solar layout", e);
+    }
+  };
+
   return (
     <SettingsContext.Provider
-      value={{ baseUrl, setBaseUrl, language, setLanguage, isLoading }}
+      value={{
+        baseUrl,
+        setBaseUrl,
+        language,
+        setLanguage,
+        solarLayout,
+        setSolarLayout,
+        isLoading,
+      }}
     >
       {children}
     </SettingsContext.Provider>

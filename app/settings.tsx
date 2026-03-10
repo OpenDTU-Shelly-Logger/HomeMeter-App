@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   Keyboard,
 } from "react-native";
+import CellLayoutConfig from "@/components/cellLayoutConfig";
 import SimplePage from "@/components/simplePage";
 import SimpleText from "@/components/simpleText";
 import { useSettings } from "@/contexts/settingsContext";
 import { useTheme } from "@/hooks/useTheme";
 import { useTranslations } from "@/locales";
+import SimpleBox from "@/components/simpleBox";
 
 export default function SettingsScreen() {
   const colors = useTheme();
@@ -39,8 +41,13 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SimplePage showBackButton headline={t.settings} showSettingsIcon={false}>
-      <View style={styles.section}>
+    <SimplePage
+      enableScroll
+      showBackButton
+      headline={t.settings}
+      showSettingsIcon={false}
+    >
+      <SimpleBox style={styles.section}>
         {/* Base URL */}
         <SimpleText style={styles.label}>{t.serverUrl}</SimpleText>
         <SimpleText style={styles.description}>{t.enterBaseUrl}</SimpleText>
@@ -79,9 +86,9 @@ export default function SettingsScreen() {
         >
           <SimpleText style={styles.buttonText}>{t.resetToDefault}</SimpleText>
         </TouchableOpacity>
-      </View>
+      </SimpleBox>
 
-      <View style={styles.section}>
+      <SimpleBox style={styles.section}>
         {/* Language */}
         <SimpleText style={styles.label}>{t.language}</SimpleText>
         <View style={styles.segmentedControl}>
@@ -110,16 +117,21 @@ export default function SettingsScreen() {
             </TouchableOpacity>
           ))}
         </View>
-      </View>
+      </SimpleBox>
 
-      <View style={styles.section}>
+      <SimpleBox style={styles.section}>
+        <SimpleText style={styles.label}>{t.solarLayout}</SimpleText>
+        <CellLayoutConfig />
+      </SimpleBox>
+
+      <SimpleBox style={styles.section}>
         <SimpleText style={styles.label}>{t.about}</SimpleText>
         <SimpleText style={styles.description}>
           {Constants.expoConfig?.name} v{Constants.expoConfig?.version}
           {"\n"}
           Author: Julius Kirsch
         </SimpleText>
-      </View>
+      </SimpleBox>
     </SimplePage>
   );
 }

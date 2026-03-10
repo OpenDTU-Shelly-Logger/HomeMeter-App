@@ -64,6 +64,21 @@ const de: Translations = {
   resetToDefault: "Zurücksetzen",
   about: "Über",
   language: "Sprache",
+
+  // Solar layout config
+  solarLayout: "Solar-Panel-Layout",
+  compassRotation: "Kompass-Ausrichtung",
+  addPanel: "Panel hinzufügen",
+  position: "Position",
+  size: "Größe",
+  panelIndex: "DC-Eingang",
+  removePanel: "Entfernen",
+  exportLayout: "Layout exportieren",
+  importLayout: "Layout importieren",
+  layoutCode: "Layout-Code hier einfügen",
+  applyLayout: "Übernehmen",
+  invalidLayoutCode:
+    "Ungültiger Layout-Code – bitte prüfen und erneut versuchen.",
 };
 
 export default de;

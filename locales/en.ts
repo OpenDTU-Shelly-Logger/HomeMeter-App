@@ -62,6 +62,20 @@ const en = {
   resetToDefault: "Reset to Default",
   about: "About",
   language: "Language",
+
+  // Solar layout config
+  solarLayout: "Solar Panel Layout",
+  compassRotation: "Compass Rotation",
+  addPanel: "Add Panel",
+  position: "Position",
+  size: "Size",
+  panelIndex: "DC Input",
+  removePanel: "Remove",
+  exportLayout: "Export Layout",
+  importLayout: "Import Layout",
+  layoutCode: "Paste layout code here",
+  applyLayout: "Apply",
+  invalidLayoutCode: "Invalid layout code — please check and try again.",
 };
 
 export default en;
