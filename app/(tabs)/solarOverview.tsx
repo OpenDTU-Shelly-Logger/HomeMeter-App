@@ -41,17 +41,17 @@ export default function SolarOverview() {
         <SingleValueBox
           headline="Peak"
           value={
-            (data.solarHistoryData[
-              data.solarHistoryData.length - 1
-            ]?.HighestWatt.toFixed(1) ?? "") + "W"
+            (data.historyData[data.historyData.length - 1]?.highestWatt.toFixed(
+              1,
+            ) ?? "") + "W"
           }
         />
         <SingleValueBox
           headline="Temperatur"
           value={
-            (data.solarHistoryData[
-              data.solarHistoryData.length - 1
-            ]?.Temperature.toFixed(1) ?? "") + "°C"
+            (data.historyData[data.historyData.length - 1]?.temperature.toFixed(
+              1,
+            ) ?? "") + "°C"
           }
         />
       </VerticalView>
@@ -101,7 +101,7 @@ export default function SolarOverview() {
                 );
               }
               return null;
-            }
+            },
           )}
       </VerticalView>
       <SectionHeadline text="Wechselrichter" />

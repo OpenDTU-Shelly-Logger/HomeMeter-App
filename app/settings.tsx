@@ -14,6 +14,7 @@ import { useTheme } from "@/hooks/useTheme";
 export default function SettingsScreen() {
   const colors = useTheme();
   const { baseUrl, setBaseUrl } = useSettings();
+
   const [urlInput, setUrlInput] = useState(baseUrl);
 
   useEffect(() => {
@@ -26,15 +27,18 @@ export default function SettingsScreen() {
   };
 
   const handleReset = () => {
-    const defaultUrl = "https://example.com";
-    setUrlInput(defaultUrl);
-    setBaseUrl(defaultUrl);
+    const defaultBaseUrl = "https://example.com";
+
+    setUrlInput(defaultBaseUrl);
+    setBaseUrl(defaultBaseUrl);
+
     Keyboard.dismiss();
   };
 
   return (
     <SimplePage showBackButton headline="Settings" showSettingsIcon={false}>
       <View style={styles.section}>
+        {/* Base URL */}
         <SimpleText style={styles.label}>Server URL</SimpleText>
         <SimpleText style={styles.description}>
           Enter the base URL for the solar data server.
@@ -56,7 +60,6 @@ export default function SettingsScreen() {
           autoCapitalize="none"
           autoCorrect={false}
           keyboardType="url"
-          onBlur={handleSave}
         />
 
         <TouchableOpacity

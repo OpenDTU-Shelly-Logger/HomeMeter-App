@@ -8,9 +8,9 @@ import {
 import * as StatusBar from "expo-status-bar";
 import * as NavigationBar from "expo-navigation-bar";
 import React, { useEffect } from "react";
-import { DataProvider } from "@/contexts/dataProvider";
-import { SettingsProvider } from "@/contexts/settingsContext";
+import { SettingsProvider, useSettings } from "@/contexts/settingsContext";
 import Themes from "@/assets/colors/colors";
+import { DataProvider } from "@/contexts/dataProvider";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();

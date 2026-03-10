@@ -5,36 +5,37 @@ import SimplePage from "@/components/simplePage";
 import SingleValueBox from "@/components/singleValueBox";
 import VerticalView from "@/components/verticalView";
 import { useData } from "@/contexts/dataProvider";
-import React from "react";
+import { useSettings } from "@/contexts/settingsContext";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 
 export default function SolarOverview() {
   const data = useData();
 
-  const historyData = data.solarHistoryData[data.solarHistoryData.length - 1];
+  const historyData = data.historyData[data.historyData.length - 1];
 
   const calculateTotalExported = () => {
     let total = 0;
-    data.solarHistoryData?.forEach((item) => {
-      if (item.ExportedWH === undefined) return;
-      total += item.ExportedWH;
+    data.historyData?.forEach((item) => {
+      if (item.exportedWH === undefined) return;
+      total += item.exportedWH;
     });
     return total;
   };
   const calculateTotalConsumed = () => {
     let total = 0;
-    data.solarHistoryData?.forEach((item) => {
-      if (item.ConsumedWH === undefined) return;
-      total += item.ConsumedWH;
+    data.historyData?.forEach((item) => {
+      if (item.consumedWH === undefined) return;
+      total += item.consumedWH;
     });
     return total;
   };
 
   const calculateTotalSolarUsed = () => {
     let total = 0;
-    data.solarHistoryData?.forEach((item) => {
-      if (item.SelfUsedWH === undefined) return;
-      total += item.SelfUsedWH;
+    data.historyData?.forEach((item) => {
+      if (item.selfUsedWH === undefined) return;
+      total += item.selfUsedWH;
     });
     return total;
   };
@@ -64,7 +65,7 @@ export default function SolarOverview() {
           rightIcon="flash"
           bottomIcon="home"
           lineText={
-            (data.livePowerData?.total_power ?? 0 < 0
+            ((data.livePowerData?.total_power ?? 0 < 0)
               ? -1 * (data.livePowerData?.total_power ?? 0)
               : "0") + "W"
           }
@@ -93,43 +94,43 @@ export default function SolarOverview() {
         <SingleValueBox
           height={30}
           headline="Peak"
-          value={(historyData?.HighestWatt.toFixed(1) ?? "") + "W"}
+          value={(historyData?.highestWatt.toFixed(1) ?? "") + "W"}
         />
 
         <View style={{ marginTop: 10 }} />
         {historyData &&
-          historyData.ConsumedWH !== undefined &&
-          historyData.ExportedWH !== undefined &&
-          historyData.SelfConsumptionRatio !== undefined &&
-          historyData.SelfUsedWH !== undefined &&
-          historyData.AutarkyRatio !== undefined && (
+          historyData.consumedWH !== undefined &&
+          historyData.exportedWH !== undefined &&
+          historyData.selfConsumptionRatio !== undefined &&
+          historyData.selfUsedWH !== undefined &&
+          historyData.autarkyRatio !== undefined && (
             <>
               <SingleValueBox
                 height={30}
                 headline={"Hausverbrauch"}
-                value={historyData.ConsumedWH.toFixed(0) + " Wh"}
+                value={historyData.consumedWH.toFixed(0) + " Wh"}
               />
               <SingleValueBox
                 height={30}
                 headline={"Netzeinspeisung"}
-                value={historyData.ExportedWH.toFixed(0) + " Wh"}
+                value={historyData.exportedWH.toFixed(0) + " Wh"}
               />
               <SingleValueBox
                 height={30}
                 headline={"Umgesetzter Solarstrom"}
-                value={historyData.SelfUsedWH.toFixed(0) + " Wh"}
+                value={historyData.selfUsedWH.toFixed(0) + " Wh"}
               />
               <SingleValueBox
                 height={30}
                 headline={"Eigenverbrauchsquote"}
                 value={
-                  (historyData.SelfConsumptionRatio * 100).toFixed(0) + " %"
+                  (historyData.selfConsumptionRatio * 100).toFixed(0) + " %"
                 }
               />
               <SingleValueBox
                 height={30}
                 headline={"Autarkiegrad"}
-                value={(historyData.AutarkyRatio * 100).toFixed(0) + " %"}
+                value={(historyData.autarkyRatio * 100).toFixed(0) + " %"}
               />
               <View style={{ marginTop: 10 }} />
 

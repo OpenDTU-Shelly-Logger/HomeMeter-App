@@ -1,15 +1,14 @@
 import { useTheme } from "@/hooks/useTheme";
-import { PowerData } from "@/backend/powerDataParser";
-import { DailySolarData, SolarData } from "@/backend/solarDataParser";
-import SimpleBox from "@/components/simpleBox";
 import SimpleModalBottomFlyout from "@/components/simpleModalBottomFlyout";
 import SimplePage from "@/components/simplePage";
 import SimpleText from "@/components/simpleText";
 import SingleValueBox from "@/components/singleValueBox";
 import { useData } from "@/contexts/dataProvider";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, FlatList, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
+import { DailySolarData } from "@/types/SolarHistory";
+import { dateItemToString } from "@/types/DateItem";
 
 export default function SolarTable() {
   const data = useData();
@@ -34,11 +33,11 @@ export default function SolarTable() {
         backgroundColor: index % 2 == 0 ? colors.background : colors.accent2,
       }}
     >
-      <SimpleText style={styles.text}>{item.Date}</SimpleText>
-      <SimpleText style={styles.text}>{item.YieldTotal.toFixed(1)}</SimpleText>
-      <SimpleText style={styles.text}>{item.YieldDay}</SimpleText>
-      <SimpleText style={styles.text}>{item.HighestWatt.toFixed(0)}</SimpleText>
-      <SimpleText style={styles.text}>{item.Temperature.toFixed(0)}</SimpleText>
+      <SimpleText style={styles.text}>{dateItemToString(item.date)}</SimpleText>
+      <SimpleText style={styles.text}>{item.yieldTotal.toFixed(1)}</SimpleText>
+      <SimpleText style={styles.text}>{item.yieldDay}</SimpleText>
+      <SimpleText style={styles.text}>{item.highestWatt.toFixed(0)}</SimpleText>
+      <SimpleText style={styles.text}>{item.temperature.toFixed(0)}</SimpleText>
     </TouchableOpacity>
   );
 
@@ -84,22 +83,22 @@ export default function SolarTable() {
             }}
           >
             <SimpleText style={{ fontSize: 24, fontWeight: "bold" }}>
-              Daten vom {modalItem.Date}
+              Daten vom {dateItemToString(modalItem.date)}
             </SimpleText>
             <SingleValueBox
               fontStyle={{ fontSize: 18 }}
               headline="Ertrag"
-              value={"+" + modalItem.YieldDay + " Wh"}
+              value={"+" + modalItem.yieldDay + " Wh"}
             />
             <SingleValueBox
               fontStyle={{ fontSize: 18 }}
-              headline={`Peak Watt (${modalItem.TimeHighestWatt})`}
-              value={modalItem.HighestWatt + " W"}
+              headline={`Peak Watt (${modalItem.timeHighestWatt})`}
+              value={modalItem.highestWatt + " W"}
             />
             <SingleValueBox
               fontStyle={{ fontSize: 18 }}
-              headline={`Höchste Temperatur (${modalItem.TimeHighestTemp})`}
-              value={modalItem.Temperature + " °C"}
+              headline={`Höchste Temperatur (${modalItem.timeHighestTemp})`}
+              value={modalItem.temperature + " °C"}
             />
             <View
               style={{
@@ -110,39 +109,39 @@ export default function SolarTable() {
               }}
             />
 
-            {modalItem.ConsumedWH && (
+            {modalItem.consumedWH && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
                 headline={"Hausverbrauch"}
-                value={modalItem.ConsumedWH.toFixed(0) + " Wh"}
+                value={modalItem.consumedWH.toFixed(0) + " Wh"}
               />
             )}
-            {modalItem.ExportedWH && (
+            {modalItem.exportedWH && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
                 headline={"Netzeinspeisung"}
-                value={modalItem.ExportedWH.toFixed(0) + " Wh"}
+                value={modalItem.exportedWH.toFixed(0) + " Wh"}
               />
             )}
-            {modalItem.SelfUsedWH && (
+            {modalItem.selfUsedWH && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
                 headline={"Umgesetzter Solarstrom"}
-                value={modalItem.SelfUsedWH.toFixed(0) + " Wh"}
+                value={modalItem.selfUsedWH.toFixed(0) + " Wh"}
               />
             )}
-            {modalItem.SelfConsumptionRatio && (
+            {modalItem.selfConsumptionRatio && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
                 headline={"Eigenverbrauchsquote"}
-                value={(modalItem.SelfConsumptionRatio * 100).toFixed(0) + " %"}
+                value={(modalItem.selfConsumptionRatio * 100).toFixed(0) + " %"}
               />
             )}
-            {modalItem.AutarkyRatio && (
+            {modalItem.autarkyRatio && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
                 headline={"Autarkiegrad"}
-                value={(modalItem.AutarkyRatio * 100).toFixed(0) + " %"}
+                value={(modalItem.autarkyRatio * 100).toFixed(0) + " %"}
               />
             )}
           </View>
@@ -150,9 +149,9 @@ export default function SolarTable() {
       </SimpleModalBottomFlyout>
       <FlatList
         style={{ padding: "5%" }}
-        data={data.solarHistoryData.toReversed()}
+        data={data.historyData.toReversed()}
         renderItem={({ item, index }) => renderItem(item, index)}
-        keyExtractor={(item) => item.Date.toString()}
+        keyExtractor={(item, i) => i.toString()}
       />
     </SimplePage>
   );

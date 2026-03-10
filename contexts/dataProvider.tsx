@@ -1,81 +1,88 @@
-import { loadPowerData, PowerData } from "@/backend/powerDataParser";
-import {
-  DailySolarData,
-  getAllSolarItems,
-  loadAllData,
-  loadData,
-  SolarData,
-} from "@/backend/solarDataParser";
-import { createContext, useContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
+"use client";
 
-import { useSettings } from "@/contexts/settingsContext";
+import {
+  getAllHistoryItems,
+  loadHistoryData,
+} from "@/services/historyDataReader";
+import { loadLiveSolarData } from "@/services/liveSolarDataReader";
+import { loadPowerData } from "@/services/powerDataParser";
+import { PowerData } from "@/types/Emeter";
+import { SolarData } from "@/types/OpenDTUData";
+import { DailySolarData } from "@/types/SolarHistory";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { io } from "socket.io-client";
+import { useSettings } from "./settingsContext";
+import { Platform } from "react-native";
 
 interface DataContextType {
+  historyData: DailySolarData[];
   liveSolarData: SolarData | null;
-  solarHistoryData: DailySolarData[];
   livePowerData: PowerData | null;
   reloadData: () => Promise<void>;
 }
 
-const DataProviderContext = createContext<DataContextType | undefined>(
-  undefined,
-);
+const DataContext = createContext<DataContextType | undefined>(undefined);
 
-export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export function DataProvider({ children }: { children: ReactNode }) {
   const { baseUrl, isLoading } = useSettings();
-  const [liveSolarData, setLiveSolarData] = useState<SolarData | null>(null);
-  const [solarHistoryData, setSolarHistoryData] = useState<DailySolarData[]>(
-    [],
-  );
-  const [livePowerData, setLivePowerData] = useState<PowerData | null>(null);
+  const [historyData, setHistoryData] = useState<DailySolarData[]>([]);
+  const [liveSolarData, setLiveData] = useState<SolarData | null>(null);
+  const [livePowerData, setPowerData] = useState<PowerData | null>(null);
 
   const fetchData = async () => {
     if (!baseUrl) return;
-    try {
-      const allData = await loadAllData(baseUrl);
-      let res = getAllSolarItems(allData);
-      const items = res.items;
-      setSolarHistoryData(items);
 
-      const liveData = await loadData(baseUrl);
-      setLiveSolarData(liveData);
+    await loadHistoryData(baseUrl).then((data) => {
+      setHistoryData(data.items);
+    });
 
-      const powerData = await loadPowerData(baseUrl);
-      setLivePowerData(powerData);
-    } catch (e) {
-      console.error(e);
-    }
+    await loadLiveSolarData(baseUrl).then((data) => {
+      setLiveData(data);
+    });
+
+    await loadPowerData(baseUrl).then((data) => setPowerData(data));
   };
 
   useEffect(() => {
     if (isLoading || !baseUrl) return;
 
     const socket = io(baseUrl, {
-      path: "/dataSocket",
+      path: "/api/socket",
       transports: ["websocket"],
     });
 
-    socket.on("connect_error", (err) => {
-      console.log(`connect_error due to ${err.message}`);
+    socket.on("connection", (socket: any) => {
+      console.log("Client connected:", socket.id);
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected:", socket.id);
+      });
     });
 
-    socket.on("liveData", (data) => {
-      setLiveSolarData(data);
-    });
+    // 1. Listen for Live OpenDTU data
+    socket.on("liveSolar", (data) => setLiveData(data));
 
+    // 2. Listen for History updates
     socket.on("historyData", (data) => {
-      let res = getAllSolarItems(data);
-      const items = res.items;
-      if (items.length > 0) {
-        setSolarHistoryData(items);
+      let items: DailySolarData[];
+      if (typeof data === "string" && data.includes("|")) {
+        items = getAllHistoryItems(data).items;
+      } else {
+        items = typeof data === "string" ? JSON.parse(data).items : data.items;
       }
+
+      if (items !== undefined) setHistoryData(items);
     });
 
-    socket.on("powerData", (data) => {
-      setLivePowerData(JSON.parse(data));
+    // 3. Listen for Shelly/Power data
+    socket.on("livePower", (data) => {
+      setPowerData(typeof data === "string" ? JSON.parse(data) : data);
     });
 
     fetchData();
@@ -86,23 +93,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [baseUrl, isLoading]);
 
   return (
-    <DataProviderContext.Provider
+    <DataContext.Provider
       value={{
+        historyData,
         liveSolarData: liveSolarData,
-        solarHistoryData: solarHistoryData,
         livePowerData: livePowerData,
         reloadData: fetchData,
       }}
     >
       {children}
-    </DataProviderContext.Provider>
+    </DataContext.Provider>
   );
-};
+}
 
-export const useData = (): DataContextType => {
-  const context = useContext(DataProviderContext);
-  if (!context) {
-    throw new Error("context must be used within a DataProvider");
-  }
+export const useData = () => {
+  const context = useContext(DataContext);
+  if (!context) throw new Error("useData must be used within DataProvider");
   return context;
 };
