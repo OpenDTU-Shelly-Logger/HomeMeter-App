@@ -6,11 +6,13 @@ import SingleValueBox from "@/components/singleValueBox";
 import VerticalView from "@/components/verticalView";
 import { useData } from "@/contexts/dataProvider";
 import { useSettings } from "@/contexts/settingsContext";
+import { useTranslations } from "@/locales";
 import React, { useEffect } from "react";
 import { View } from "react-native";
 
 export default function SolarOverview() {
   const data = useData();
+  const t = useTranslations();
 
   const historyData = data.historyData[data.historyData.length - 1];
 
@@ -41,7 +43,7 @@ export default function SolarOverview() {
   };
 
   return (
-    <SimplePage headline="Übersicht" enableScroll={true}>
+    <SimplePage headline={t.overview} enableScroll={true}>
       <VerticalView
         style={{ gap: 10, alignItems: "center", justifyContent: "center" }}
       >
@@ -73,10 +75,10 @@ export default function SolarOverview() {
           useGridPower={(data.livePowerData?.total_power ?? 0) > 0}
         />
         <View style={{ marginTop: 10 }} />
-        <SectionHeadline text="Allgemein" />
+        <SectionHeadline text={t.general} />
         <SingleValueBox
           height={30}
-          headline="Ertrag Heute"
+          headline={t.yieldToday}
           value={
             (data.liveSolarData?.total.YieldDay.v.toFixed(0) ?? "") +
             data.liveSolarData?.total.YieldDay.u
@@ -85,7 +87,7 @@ export default function SolarOverview() {
 
         <SingleValueBox
           height={30}
-          headline="Gesamtertrag"
+          headline={t.totalYield}
           value={
             (data.liveSolarData?.total.YieldTotal.v.toFixed(1) ?? "") +
             data.liveSolarData?.total.YieldTotal.u
@@ -93,7 +95,7 @@ export default function SolarOverview() {
         />
         <SingleValueBox
           height={30}
-          headline="Peak"
+          headline={t.peak}
           value={(historyData?.highestWatt.toFixed(1) ?? "") + "W"}
         />
 
@@ -107,52 +109,52 @@ export default function SolarOverview() {
             <>
               <SingleValueBox
                 height={30}
-                headline={"Hausverbrauch"}
+                headline={t.houseConsumption}
                 value={historyData.consumedWH.toFixed(0) + " Wh"}
               />
               <SingleValueBox
                 height={30}
-                headline={"Netzeinspeisung"}
+                headline={t.gridFeedIn}
                 value={historyData.exportedWH.toFixed(0) + " Wh"}
               />
               <SingleValueBox
                 height={30}
-                headline={"Umgesetzter Solarstrom"}
+                headline={t.convertedSolarPower}
                 value={historyData.selfUsedWH.toFixed(0) + " Wh"}
               />
               <SingleValueBox
                 height={30}
-                headline={"Eigenverbrauchsquote"}
+                headline={t.selfConsumptionRate}
                 value={
                   (historyData.selfConsumptionRatio * 100).toFixed(0) + " %"
                 }
               />
               <SingleValueBox
                 height={30}
-                headline={"Autarkiegrad"}
+                headline={t.autarkyRate}
                 value={(historyData.autarkyRatio * 100).toFixed(0) + " %"}
               />
               <View style={{ marginTop: 10 }} />
 
               <SingleValueBox
                 height={30}
-                headline={"Gesamt Stromverbrauch"}
+                headline={t.totalPowerConsumption}
                 value={(calculateTotalConsumed() / 1000).toFixed(2) + "kWh"}
               />
               <SingleValueBox
                 height={30}
-                headline={"Gesamt Solar verwendet"}
+                headline={t.totalSolarUsed}
                 value={(calculateTotalSolarUsed() / 1000).toFixed(2) + "kWh"}
               />
               <SingleValueBox
                 height={30}
-                headline={"Gesamt ins Netz"}
+                headline={t.totalGridFeedIn}
                 value={(calculateTotalExported() / 1000).toFixed(2) + " kWh"}
               />
             </>
           )}
         <View style={{ marginTop: 10 }} />
-        <SectionHeadline text="Ertrag Zellen" />
+        <SectionHeadline text={t.cellYield} />
         <IndividualCellDisplay />
         {/* <SectionHeadline text="Verbrauch" />
                 <SingleValueBox

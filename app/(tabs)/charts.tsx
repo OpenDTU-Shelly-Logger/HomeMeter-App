@@ -1,6 +1,7 @@
 import SimplePage from "@/components/simplePage";
 import { useData } from "@/contexts/dataProvider";
 import { dateItemToString } from "@/types/DateItem";
+import { useTranslations } from "@/locales";
 import React from "react";
 import { Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
@@ -8,6 +9,7 @@ import { LineChart } from "react-native-chart-kit";
 export default function ChartsPage() {
   const screenWidth = Dimensions.get("window").width;
   const data = useData();
+  const t = useTranslations();
   const showDataCount = 31;
   const showData = data.historyData.slice(
     data.historyData.length - showDataCount,
@@ -15,7 +17,7 @@ export default function ChartsPage() {
   const skipEvery = showData.length > 20 ? 7 : 1;
 
   return (
-    <SimplePage headline="Solar" enableScroll={true}>
+    <SimplePage headline={t.solar} enableScroll={true}>
       <LineChart
         data={{
           labels: showData.map((date, index) =>

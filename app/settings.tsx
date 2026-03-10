@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Constants from "expo-constants";
 import {
   StyleSheet,
   TextInput,
@@ -10,10 +11,12 @@ import SimplePage from "@/components/simplePage";
 import SimpleText from "@/components/simpleText";
 import { useSettings } from "@/contexts/settingsContext";
 import { useTheme } from "@/hooks/useTheme";
+import { useTranslations } from "@/locales";
 
 export default function SettingsScreen() {
   const colors = useTheme();
-  const { baseUrl, setBaseUrl } = useSettings();
+  const { baseUrl, setBaseUrl, language, setLanguage } = useSettings();
+  const t = useTranslations();
 
   const [urlInput, setUrlInput] = useState(baseUrl);
 
@@ -36,13 +39,11 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SimplePage showBackButton headline="Settings" showSettingsIcon={false}>
+    <SimplePage showBackButton headline={t.settings} showSettingsIcon={false}>
       <View style={styles.section}>
         {/* Base URL */}
-        <SimpleText style={styles.label}>Server URL</SimpleText>
-        <SimpleText style={styles.description}>
-          Enter the base URL for the solar data server.
-        </SimpleText>
+        <SimpleText style={styles.label}>{t.serverUrl}</SimpleText>
+        <SimpleText style={styles.description}>{t.enterBaseUrl}</SimpleText>
 
         <TextInput
           style={[
@@ -66,7 +67,7 @@ export default function SettingsScreen() {
           style={[styles.button, { backgroundColor: colors.accent }]}
           onPress={handleSave}
         >
-          <SimpleText style={styles.buttonText}>Save</SimpleText>
+          <SimpleText style={styles.buttonText}>{t.save}</SimpleText>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -76,8 +77,48 @@ export default function SettingsScreen() {
           ]}
           onPress={handleReset}
         >
-          <SimpleText style={styles.buttonText}>Reset to Default</SimpleText>
+          <SimpleText style={styles.buttonText}>{t.resetToDefault}</SimpleText>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.section}>
+        {/* Language */}
+        <SimpleText style={styles.label}>{t.language}</SimpleText>
+        <View style={styles.segmentedControl}>
+          {(["en", "de"] as const).map((lang) => (
+            <TouchableOpacity
+              key={lang}
+              style={[
+                styles.segment,
+                {
+                  backgroundColor:
+                    language === lang ? colors.accent : colors.containerBG,
+                },
+              ]}
+              onPress={() => setLanguage(lang)}
+            >
+              <SimpleText
+                style={[
+                  styles.segmentText,
+                  {
+                    color: language === lang ? colors.background : colors.text,
+                  },
+                ]}
+              >
+                {lang === "en" ? "English" : "Deutsch"}
+              </SimpleText>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
+      <View style={styles.section}>
+        <SimpleText style={styles.label}>{t.about}</SimpleText>
+        <SimpleText style={styles.description}>
+          {Constants.expoConfig?.name} v{Constants.expoConfig?.version}
+          {"\n"}
+          Author: Julius Kirsch
+        </SimpleText>
       </View>
     </SimplePage>
   );
@@ -117,5 +158,21 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  segmentedControl: {
+    flexDirection: "row",
+    borderRadius: 8,
+    overflow: "hidden",
+    marginBottom: 10,
+  },
+  segment: {
+    flex: 1,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  segmentText: {
+    fontSize: 15,
+    fontWeight: "600",
   },
 });

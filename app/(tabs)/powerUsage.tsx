@@ -8,21 +8,23 @@ import { View, Text } from "react-native";
 import SimpleKeyValueBox from "@/components/simpleKeyValueBox";
 import SectionHeadline from "@/components/sectionHeadline";
 import { useData } from "@/contexts/dataProvider";
+import { useTranslations } from "@/locales";
 
 export default function PowerUsage() {
   const data = useData();
+  const t = useTranslations();
 
   return (
-    <SimplePage headline="Verbrauch" enableScroll={true}>
+    <SimplePage headline={t.consumption} enableScroll={true}>
       <VerticalView
         style={{ gap: 10, alignItems: "center", justifyContent: "center" }}
       >
         <SingleValueBox
-          headline="Aktuelle Einspeisung"
+          headline={t.currentFeedIn}
           value={data.livePowerData?.total_power.toFixed(2) + "W"}
         />
         <SingleValueBox
-          headline="Solar Aktuell"
+          headline={t.solarCurrent}
           value={
             "+" +
             (data.liveSolarData?.total.Power.v.toFixed(2) ?? "") +
@@ -30,7 +32,7 @@ export default function PowerUsage() {
           }
         />
         <SingleValueBox
-          headline="Hausverbrauch"
+          headline={t.houseConsumption}
           value={
             (
               (data.livePowerData?.total_power ?? 0) +
@@ -39,18 +41,18 @@ export default function PowerUsage() {
           }
         />
       </VerticalView>
-      <SectionHeadline text="Phasen" />
+      <SectionHeadline text={t.phases} />
       <VerticalView
         style={{ gap: 10, alignItems: "center", justifyContent: "center" }}
       >
         {data.livePowerData?.emeters.map((emeter, index) => (
           <SimpleKeyValueBox
-            headline={"Phase" + (index + 1)}
+            headline={t.phase + " " + (index + 1)}
             key={index}
             data={[
-              { key: "Leistung", value: emeter.power.toFixed(2) + "W" },
-              { key: "Strom", value: emeter.current.toFixed(2) + "A" },
-              { key: "Spannung", value: emeter.voltage.toFixed(2) + "V" },
+              { key: t.power, value: emeter.power.toFixed(2) + "W" },
+              { key: t.current, value: emeter.current.toFixed(2) + "A" },
+              { key: t.voltage, value: emeter.voltage.toFixed(2) + "V" },
             ]}
           />
         ))}

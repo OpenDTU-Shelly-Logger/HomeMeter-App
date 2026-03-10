@@ -1,9 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+export type Language = "en" | "de";
+
 interface SettingsContextType {
   baseUrl: string;
   setBaseUrl: (url: string) => Promise<void>;
+  language: Language;
+  setLanguage: (lang: Language) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -15,6 +19,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [baseUrl, setBaseUrlState] = useState<string>("");
+  const [language, setLanguageState] = useState<Language>("en");
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -23,10 +28,13 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const loadSettings = async () => {
     try {
-      const storedUrl = await AsyncStorage.getItem("baseUrl");
-      if (storedUrl) {
-        setBaseUrlState(storedUrl);
-      }
+      const [storedUrl, storedLang] = await Promise.all([
+        AsyncStorage.getItem("baseUrl"),
+        AsyncStorage.getItem("language"),
+      ]);
+      if (storedUrl) setBaseUrlState(storedUrl);
+      if (storedLang === "en" || storedLang === "de")
+        setLanguageState(storedLang);
     } catch (e) {
       console.error("Failed to load settings", e);
     } finally {
@@ -45,8 +53,19 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  const setLanguage = async (lang: Language) => {
+    try {
+      await AsyncStorage.setItem("language", lang);
+      setLanguageState(lang);
+    } catch (e) {
+      console.error("Failed to save language", e);
+    }
+  };
+
   return (
-    <SettingsContext.Provider value={{ baseUrl, setBaseUrl, isLoading }}>
+    <SettingsContext.Provider
+      value={{ baseUrl, setBaseUrl, language, setLanguage, isLoading }}
+    >
       {children}
     </SettingsContext.Provider>
   );

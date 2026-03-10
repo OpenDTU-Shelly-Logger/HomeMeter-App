@@ -4,6 +4,7 @@ import SimplePage from "@/components/simplePage";
 import SimpleText from "@/components/simpleText";
 import SingleValueBox from "@/components/singleValueBox";
 import { useData } from "@/contexts/dataProvider";
+import { useTranslations } from "@/locales";
 import React, { useState } from "react";
 import { View, FlatList, TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
@@ -13,6 +14,7 @@ import { dateItemToString } from "@/types/DateItem";
 export default function SolarTable() {
   const data = useData();
   const colors = useTheme();
+  const t = useTranslations();
 
   const [modalItem, setModalItem] = useState<DailySolarData | null>(null);
 
@@ -44,7 +46,7 @@ export default function SolarTable() {
   return (
     <SimplePage
       enableScroll={false}
-      headline="Solar Verlauf"
+      headline={t.solarHistory}
       style={{
         display: "flex",
         alignItems: "center",
@@ -60,11 +62,11 @@ export default function SolarTable() {
           marginBottom: 10,
         }}
       >
-        <SimpleText style={styles.textHeadline}>Datum</SimpleText>
-        <SimpleText style={styles.textHeadline}>Gesamt</SimpleText>
-        <SimpleText style={styles.textHeadline}>Heute</SimpleText>
-        <SimpleText style={styles.textHeadline}>Peak</SimpleText>
-        <SimpleText style={styles.textHeadline}>Temp</SimpleText>
+        <SimpleText style={styles.textHeadline}>{t.date}</SimpleText>
+        <SimpleText style={styles.textHeadline}>{t.total}</SimpleText>
+        <SimpleText style={styles.textHeadline}>{t.today}</SimpleText>
+        <SimpleText style={styles.textHeadline}>{t.peak}</SimpleText>
+        <SimpleText style={styles.textHeadline}>{t.temp}</SimpleText>
       </View>
       <SimpleModalBottomFlyout
         isVisible={modalItem != null}
@@ -83,21 +85,21 @@ export default function SolarTable() {
             }}
           >
             <SimpleText style={{ fontSize: 24, fontWeight: "bold" }}>
-              Daten vom {dateItemToString(modalItem.date)}
+              {t.dataFrom} {dateItemToString(modalItem.date)}
             </SimpleText>
             <SingleValueBox
               fontStyle={{ fontSize: 18 }}
-              headline="Ertrag"
+              headline={t.yield}
               value={"+" + modalItem.yieldDay + " Wh"}
             />
             <SingleValueBox
               fontStyle={{ fontSize: 18 }}
-              headline={`Peak Watt (${modalItem.timeHighestWatt})`}
+              headline={`${t.peak} Watt (${modalItem.timeHighestWatt})`}
               value={modalItem.highestWatt + " W"}
             />
             <SingleValueBox
               fontStyle={{ fontSize: 18 }}
-              headline={`Höchste Temperatur (${modalItem.timeHighestTemp})`}
+              headline={`${t.highestTemperature} (${modalItem.timeHighestTemp})`}
               value={modalItem.temperature + " °C"}
             />
             <View
@@ -112,35 +114,35 @@ export default function SolarTable() {
             {modalItem.consumedWH && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
-                headline={"Hausverbrauch"}
+                headline={t.houseConsumption}
                 value={modalItem.consumedWH.toFixed(0) + " Wh"}
               />
             )}
             {modalItem.exportedWH && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
-                headline={"Netzeinspeisung"}
+                headline={t.gridFeedIn}
                 value={modalItem.exportedWH.toFixed(0) + " Wh"}
               />
             )}
             {modalItem.selfUsedWH && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
-                headline={"Umgesetzter Solarstrom"}
+                headline={t.convertedSolarPower}
                 value={modalItem.selfUsedWH.toFixed(0) + " Wh"}
               />
             )}
             {modalItem.selfConsumptionRatio && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
-                headline={"Eigenverbrauchsquote"}
+                headline={t.selfConsumptionRate}
                 value={(modalItem.selfConsumptionRatio * 100).toFixed(0) + " %"}
               />
             )}
             {modalItem.autarkyRatio && (
               <SingleValueBox
                 fontStyle={{ fontSize: 18 }}
-                headline={"Autarkiegrad"}
+                headline={t.autarkyRate}
                 value={(modalItem.autarkyRatio * 100).toFixed(0) + " %"}
               />
             )}
